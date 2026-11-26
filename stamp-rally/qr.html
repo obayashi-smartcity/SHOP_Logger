@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>QRコード印刷 | スタンプラリー</title>
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { background: #fff; }
+    .qr-toolbar { padding: 24px 0; }
+    .qr-toolbar h1 { margin: 0 0 6px; font-family: var(--font-serif); font-weight: 500; }
+    .qr-toolbar .button { max-width: 260px; margin-top: 12px; }
+    .qr-sheet { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10mm; width: min(100%, 190mm); margin: 0 auto 40px; }
+    .qr-card { break-inside: avoid; padding: 8mm 6mm; border: 1px solid var(--color-line); border-radius: 14px; text-align: center; background: var(--color-base); }
+    .qr-card .brand-en { font-size: 1rem; }
+    .qr-card .kicker { margin: 4px 0 0; font-size: .7rem; letter-spacing: .28em; font-weight: 800; color: var(--color-rose-deep); }
+    .qr-card h2 { margin: 6px 0 10px; font-family: var(--font-serif); font-weight: 500; font-size: 1.15rem; line-height: 1.4; min-height: 2.8em; display: grid; place-items: center; }
+    .qr-card .qr { width: 52mm; height: 52mm; margin: 0 auto; padding: 3mm; background: #fff; border-radius: 8px; }
+    .qr-card .qr svg { width: 100%; height: 100%; display: block; }
+    .qr-card .howto-text { margin: 8px 0 0; font-size: .78rem; font-weight: 700; }
+    .qr-card .url { margin: 4px 0 0; font-size: .55rem; color: var(--color-muted); word-break: break-all; }
+    @media print {
+      .qr-toolbar { display: none; }
+      @page { size: A4; margin: 10mm; }
+      .qr-sheet { margin: 0 auto; }
+      .qr-card { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+  <script src="js/config.js" defer></script>
+  <script src="js/vendor/qrcode.js" defer></script>
+  <script src="js/qr.js" defer></script>
+</head>
+<body>
+  <div class="container qr-toolbar">
+    <h1>QRコード印刷</h1>
+    <p class="small">js/config.js の SPOTS からQRコードを生成しています。A4用紙に2列で印刷されます。<br>QRの読み取り先：<span id="base-url"></span></p>
+    <button class="button button-primary" type="button" onclick="window.print()">印刷する<span aria-hidden="true">→</span></button>
+  </div>
+  <div class="qr-sheet" id="qr-sheet"></div>
+</body>
+</html>

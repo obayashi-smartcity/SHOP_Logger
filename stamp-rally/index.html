@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="robots" content="noindex">
+  <title>スタンプラリー | EmpoweringWOMEN</title>
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/config.js" defer></script>
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <span class="brand">
+        <span class="brand-en">EmpoweringWOMEN</span><small>みんまちSHOP スタンプラリー</small>
+      </span>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ===== スタンプ帳 ===== -->
+    <section class="view" id="view-stamps" aria-labelledby="stamps-title">
+      <div class="hero">
+        <img class="hero-image" src="images/hero.jpg" alt="" aria-hidden="true">
+        <div class="hero-shade"></div>
+        <div class="hero-content container">
+          <p class="eyebrow">STAMP RALLY</p>
+          <h1 id="stamps-title">スタンプラリー</h1>
+          <p class="hero-lead">会場のQRコードを読み取って、<br>スタンプをあつめよう。</p>
+        </div>
+      </div>
+
+      <div class="container">
+        <div class="card count-card">
+          <p class="section-kicker">MY STAMPS</p>
+          <p class="count"><strong id="stamp-count">0</strong><span>こ あつめました</span></p>
+          <p class="note">スタンプの数にかかわらず、いつでも景品と引き換えられます。</p>
+        </div>
+
+        <div class="scan-entry">
+          <button class="button button-scan" type="button" id="open-scanner">
+            <span class="scan-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M7 12h10"/></svg></span>
+            <span>カメラでQRを読み取る</span><span aria-hidden="true">→</span>
+          </button>
+          <p class="small">スマホのカメラアプリで読み取ってもOKです。</p>
+        </div>
+
+        <ul class="stamp-grid" id="stamp-grid" aria-label="スタンプ一覧"></ul>
+
+        <div class="actions">
+          <button class="button button-primary" type="button" id="go-redeem">
+            <span id="go-redeem-label">景品と引き換える</span><span aria-hidden="true">→</span>
+          </button>
+        </div>
+
+        <details class="howto">
+          <summary>あそびかた</summary>
+          <ol>
+            <li>会場の受付・トーク会場・各ブースにあるQRコードを、このページの「カメラでQRを読み取る」ボタン、またはスマホのカメラアプリで読み取ります。</li>
+            <li>読み取るたびにスタンプがたまります。</li>
+            <li>景品受付で「景品と引き換える」を押し、スタッフから伝えられる4桁のコードを入力してください。</li>
+          </ol>
+          <p class="small">※引換券は1台の端末につき1回ご利用いただけます。<br>※ブラウザの履歴やデータを消去すると、スタンプが消える場合があります。</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- ===== 景品引換 ===== -->
+    <section class="view" id="view-redeem" aria-labelledby="redeem-title" hidden>
+      <div class="container narrow">
+        <p class="section-kicker">GIFT TICKET</p>
+        <h1 class="page-title" id="redeem-title">景品引換券</h1>
+
+        <div class="ticket" id="ticket">
+          <div class="ticket-main">
+            <p class="ticket-brand">EmpoweringWOMEN</p>
+            <p class="ticket-label">あつめたスタンプ</p>
+            <p class="ticket-count"><strong id="ticket-count">0</strong>こ</p>
+          </div>
+          <div class="ticket-sub">
+            <span>No.</span><span id="ticket-id">------</span>
+          </div>
+          <div class="used-mark" id="used-mark" aria-hidden="true"><span>使用済</span></div>
+        </div>
+
+        <!-- 未使用時 -->
+        <form class="redeem-form" id="redeem-form" novalidate>
+          <p>景品受付のスタッフにこの画面をお見せください。<br>スタッフがお伝えする<strong>4桁のコード</strong>を入力してください。</p>
+          <label class="sr-only" for="code">4桁のコード</label>
+          <input class="code-input" id="code" name="code" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" placeholder="----" required>
+          <p class="form-error" id="form-error" role="alert"></p>
+          <button class="button button-dark" type="submit" id="redeem-submit">引き換える<span aria-hidden="true">✓</span></button>
+          <p class="small">※引き換えると、この引換券は使用済になります。</p>
+        </form>
+
+        <!-- 使用済時 -->
+        <div class="used-info" id="used-info" hidden>
+          <p class="used-title">引き換えが完了しました</p>
+          <p>ご来場ありがとうございました。</p>
+          <p class="small">引換日時：<span id="used-at">-</span></p>
+        </div>
+
+        <div class="actions">
+          <button class="button button-ghost" type="button" id="back-stamps"><span aria-hidden="true">←</span>スタンプ帳に戻る<span></span></button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- QRスキャナー（ブラウザ内カメラ） -->
+  <div class="scanner" id="scanner" hidden>
+    <div class="scanner-head">
+      <p class="section-kicker">SCAN QR</p>
+      <p class="scanner-title">QRコードを枠の中に写してください</p>
+    </div>
+    <div class="scanner-view">
+      <video id="scanner-video" playsinline muted autoplay></video>
+      <div class="scanner-frame" aria-hidden="true"><span></span></div>
+    </div>
+    <p class="scanner-msg" id="scanner-msg" role="status"></p>
+    <button class="button button-ghost-light" type="button" id="close-scanner">閉じる<span aria-hidden="true">×</span></button>
+  </div>
+
+  <!-- スタンプ取得モーダル -->
+  <div class="modal" id="modal" hidden>
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="hanko" id="modal-hanko" aria-hidden="true"><span id="modal-hanko-text">GET</span></div>
+      <p class="section-kicker" id="modal-kicker">STAMP GET!</p>
+      <p class="modal-title" id="modal-title">スタンプをゲットしました</p>
+      <p class="modal-spot" id="modal-spot"></p>
+      <button class="button button-primary" type="button" id="modal-close">OK<span aria-hidden="true">→</span></button>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="privacy">このページでは、イベント改善のため、端末ごとの匿名IDでスタンプの取得と景品引換の記録を取得します。氏名・メールアドレスなどの個人情報は取得しません。</p>
+      <p><small>運営：株式会社大林組<br>© OBAYASHI CORPORATION, All rights reserved</small></p>
+    </div>
+  </footer>
+</body>
+</html>
