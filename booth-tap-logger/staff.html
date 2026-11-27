@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="robots" content="noindex">
+  <title>スタッフ用 読み取り | EmpoweringWOMEN</title>
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/config.js" defer></script>
+  <script src="js/staff.js" defer></script>
+</head>
+<body class="staff">
+  <header class="site-header">
+    <div class="header-inner">
+      <span class="brand">
+        <span class="brand-en">EmpoweringWOMEN</span><small>スタッフ用</small>
+      </span>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ===== 設定 ===== -->
+    <section class="view" id="view-setup" aria-labelledby="setup-title">
+      <div class="container narrow">
+        <p class="section-kicker">STAFF SETUP</p>
+        <h1 class="page-title" id="setup-title">スタッフ設定</h1>
+        <p class="lead-text">読み取りを始める前に、担当するブースを設定してください。</p>
+
+        <form class="card setup-step" id="key-form" novalidate>
+          <p class="step-label"><span>1</span>合言葉を入力</p>
+          <label class="sr-only" for="staff-key">スタッフ用の合言葉</label>
+          <input class="text-input" id="staff-key" type="password" autocomplete="off" placeholder="運営から共有された合言葉" required>
+          <button class="button button-dark" type="submit" id="load-booths">ブース一覧を読み込む<span aria-hidden="true">↓</span></button>
+          <p class="form-error" id="setup-error" role="alert"></p>
+        </form>
+
+        <div class="card setup-step" id="booth-step" hidden>
+          <p class="step-label"><span>2</span>担当ブースを選択</p>
+          <ul class="booth-list" id="booth-list" role="radiogroup" aria-label="ブース一覧"></ul>
+        </div>
+
+        <div class="actions">
+          <button class="button button-primary" type="button" id="start-scan" disabled>このブースで読み取りを開始<span aria-hidden="true">→</span></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 読み取り ===== -->
+    <section class="view" id="view-scan" aria-labelledby="scan-booth" hidden>
+      <div class="container narrow">
+        <div class="scan-head">
+          <div>
+            <p class="section-kicker">BOOTH</p>
+            <p class="scan-booth" id="scan-booth">-</p>
+          </div>
+          <button class="chip-button" type="button" id="change-setup">設定を変更</button>
+        </div>
+        <p class="scan-stats">この端末の記録 <strong id="stat-count">0</strong>件<span id="stat-pending" class="pending" hidden>（未送信 <strong id="stat-pending-n">0</strong>件・自動で再送します）</span></p>
+
+        <div class="scanner-view staff-scanner">
+          <video id="scanner-video" playsinline muted autoplay></video>
+          <div class="scanner-frame" aria-hidden="true"><span></span></div>
+          <button class="button button-primary camera-start" type="button" id="camera-start" hidden>カメラを起動<span aria-hidden="true">●</span></button>
+        </div>
+        <p class="scanner-msg staff-msg" id="scanner-msg" role="status">来場者の「マイQR」を枠の中に写してください。</p>
+
+        <!-- 読み取り後のアクション選択 -->
+        <div class="card action-panel" id="action-panel" hidden>
+          <p class="action-who">No. <strong id="action-id">------</strong> を読み取りました</p>
+          <div class="action-buttons" id="action-buttons"></div>
+          <button class="text-button" type="button" id="action-cancel">記録せずに戻る</button>
+        </div>
+
+        <h2 class="recent-title">最近の記録</h2>
+        <ol class="recent-list" id="recent-list"></ol>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" hidden></div>
+</body>
+</html>
