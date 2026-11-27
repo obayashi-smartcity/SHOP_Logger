@@ -10,6 +10,7 @@
   const STORAGE_KEY = 'ew-booth-visitor-v1';
   const QR_PREFIX = 'EWV1:'; // スタッフ画面はこの接頭辞のQRだけを受け付ける
   const $ = (id) => document.getElementById(id);
+  const SURVEY_ON = Boolean(CONFIG.SURVEY && CONFIG.SURVEY.ACTION && window.createSurvey);
 
   // ---------- 状態 ----------
   const newId = () => {
@@ -82,6 +83,11 @@
     ['visit-count', 'ticket-count', 'header-count'].forEach((id) => { $(id).textContent = state.visitCount; });
     const used = Boolean(state.redeemedAt);
     $('ticket').classList.toggle('is-used', used);
+    // 未引換かつアンケート未回答なら、引換券の前にアンケートを表示
+    const needSurvey = SURVEY_ON && !used && !state.surveyDoneAt;
+    $('survey-wrap').hidden = !needSurvey;
+    $('redeem-main').hidden = needSurvey;
+    $('redeem-title').textContent = needSurvey ? 'アンケート' : '景品引換券';
     $('ticket-status').textContent = used ? '使用済' : '未使用';
     $('redeem-state').textContent = used ? '使用済' : '未使用';
     $('redeem-state').classList.toggle('is-used', used);
@@ -191,6 +197,23 @@
     $('code').addEventListener('focus', () => $('otp').classList.add('is-focused'));
     $('code').addEventListener('blur', () => $('otp').classList.remove('is-focused'));
     renderOtp();
+
+    // アンケート（Google フォームへ送信 → 完了したら4桁コード入力へ）
+    if (SURVEY_ON) {
+      window.createSurvey({
+        root: $('survey-root'),
+        config: CONFIG.SURVEY,
+        getVisitorId: () => state.id,
+        onSubmitted: () => {
+          state.surveyDoneAt = new Date().toISOString();
+          track('survey_submit');
+          save();
+          render();
+          window.scrollTo(0, 0);
+          flush();
+        }
+      });
+    }
 
     // 画面に戻ってきたとき・1分ごとに、立ち寄りブース数を更新
     document.addEventListener('visibilitychange', () => { if (!document.hidden) flush(); });

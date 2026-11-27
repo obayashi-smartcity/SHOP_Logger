@@ -10,6 +10,7 @@
   const GAS_URL = (CONFIG.GAS_URL || '').trim();
   const STORAGE_KEY = 'ew-stamp-rally-v1';
   const $ = (id) => document.getElementById(id);
+  const SURVEY_ON = Boolean(CONFIG.SURVEY && CONFIG.SURVEY.ACTION && window.createSurvey);
 
   // ---------- 状態 ----------
   const newId = () => {
@@ -100,6 +101,11 @@
 
     const used = Boolean(state.redeemedAt);
     $('ticket').classList.toggle('is-used', used);
+    // 未引換かつアンケート未回答なら、引換券の前にアンケートを表示
+    const needSurvey = SURVEY_ON && !used && !state.surveyDoneAt;
+    $('survey-wrap').hidden = !needSurvey;
+    $('redeem-main').hidden = needSurvey;
+    $('redeem-title').textContent = needSurvey ? 'アンケート' : '景品引換券';
     $('ticket-status').textContent = used ? '使用済' : '未使用';
     $('redeem-form').hidden = used;
     $('used-info').hidden = !used;
@@ -404,6 +410,23 @@
     $('code').addEventListener('focus', () => $('otp').classList.add('is-focused'));
     $('code').addEventListener('blur', () => $('otp').classList.remove('is-focused'));
     renderOtp();
+
+    // アンケート（Google フォームへ送信 → 完了したら4桁コード入力へ）
+    if (SURVEY_ON) {
+      window.createSurvey({
+        root: $('survey-root'),
+        config: CONFIG.SURVEY,
+        getVisitorId: () => state.id,
+        onSubmitted: () => {
+          state.surveyDoneAt = new Date().toISOString();
+          track('survey_submit');
+          save();
+          render();
+          window.scrollTo(0, 0);
+          flush();
+        }
+      });
+    }
 
     if (!GAS_URL) console.warn('[stamp-rally] js/config.js の GAS_URL が未設定のため、ログは端末内に保留されます。');
     flush();

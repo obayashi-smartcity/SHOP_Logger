@@ -1,6 +1,6 @@
 // =========================================================
 // スタッフ画面（設定 → QR読み取り）
-//  1. 合言葉を入力してブースマスタ（スプレッドシート booths シート）を読み込む
+//  1. PINを入力してブースマスタ（スプレッドシート booths シート）を読み込む
 //  2. 担当ブースを選んで読み取り画面へ
 //  3. 来場者のマイQRを読み取り → アクションを選んで記録
 //     （アクションが1つだけのブースは読み取った時点で自動記録）
@@ -42,7 +42,7 @@
     return res.json();
   };
   const ERROR_TEXT = {
-    invalid_key: '合言葉が正しくありません。',
+    invalid_key: 'PINが正しくありません。',
     locked: '入力回数の上限に達しました。10分ほど待ってからお試しください。',
     not_configured: 'GAS の設定が完了していません（スクリプトプロパティを確認してください）。'
   };
@@ -109,7 +109,7 @@
     e.preventDefault();
     const key = $('staff-key').value.trim();
     $('setup-error').textContent = '';
-    if (!key) { $('setup-error').textContent = '合言葉を入力してください。'; return; }
+    if (!key) { $('setup-error').textContent = 'PINを入力してください。'; return; }
     const btn = $('load-booths');
     btn.disabled = true;
     try {
@@ -205,7 +205,7 @@
         save();
         renderScanHead();
       } else if (res && (res.error === 'invalid_key' || res.error === 'locked')) {
-        toast('合言葉が変更されました。設定し直してください。', 'error');
+        toast('PINが変更されました。設定し直してください。', 'error');
         openSetup();
       }
     } catch (err) {
@@ -358,7 +358,7 @@
       save();
       renderScanHead();
     } catch (err) {
-      if (err.code === 'invalid_key' || err.code === 'locked') { toast('合言葉を入力し直してください。', 'error'); openSetup(); }
+      if (err.code === 'invalid_key' || err.code === 'locked') { toast('PINを入力し直してください。', 'error'); openSetup(); }
     }
   };
 

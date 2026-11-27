@@ -9,6 +9,7 @@
   <link rel="icon" type="image/png" href="images/favicon.png">
   <link rel="stylesheet" href="css/style.css">
   <script src="js/config.js" defer></script>
+  <script src="js/survey.js" defer></script>
   <script src="js/app.js" defer></script>
 </head>
 <body class="has-tabbar">
@@ -55,6 +56,13 @@
       <div class="page-head compact" style="padding-inline:4px">
         <h1 class="page-title" id="redeem-title">景品引換券</h1>
       </div>
+      <!-- アンケート（引換前に1回だけ） -->
+      <div id="survey-wrap" hidden>
+        <p class="survey-intro">景品のお渡し前に、かんたんなアンケート（7問・約1分）にご協力ください。</p>
+        <div id="survey-root"></div>
+      </div>
+
+      <div id="redeem-main">
       <div class="ticket compact" id="ticket">
         <span class="ticket-status" id="ticket-status">未使用</span>
         <div class="ticket-main">
@@ -85,6 +93,7 @@
         <p style="margin:6px 0">ご来場ありがとうございました。</p>
         <p class="small" style="margin:0">引換日時：<span id="used-at">-</span></p>
       </div>
+      </div>
     </section>
   </main>
 
@@ -94,7 +103,7 @@
     <h2 id="help-title">あそびかた</h2>
     <ol class="steps">
       <li>受付・トーク会場・各ブースの<strong>QRコードを読み取る</strong>とスタンプがたまります。</li>
-      <li>スタンプの数にかかわらず、いつでも景品と引き換えられます。景品受付で<strong>「景品」</strong>を開いてください。</li>
+      <li>スタンプの数にかかわらず、いつでも景品と引き換えられます。景品受付で<strong>「景品」</strong>を開き、かんたんなアンケートにお答えください。</li>
       <li>スタッフから聞いた<strong>4桁のコード</strong>を入力すると引き換え完了です（1端末1回）。</li>
     </ol>
     <p class="sheet-note">※ブラウザのデータを消去すると、スタンプが消える場合があります。</p>
