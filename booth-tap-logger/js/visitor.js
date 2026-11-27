@@ -79,11 +79,12 @@
   const render = () => {
     $('myqr-id').textContent = shortId();
     $('ticket-id').textContent = shortId();
-    $('visit-count').textContent = state.visitCount;
-    $('ticket-count').textContent = state.visitCount;
+    ['visit-count', 'ticket-count', 'header-count'].forEach((id) => { $(id).textContent = state.visitCount; });
     const used = Boolean(state.redeemedAt);
-    $('go-redeem-label').textContent = used ? '引換券（使用済）を見る' : '景品と引き換える';
     $('ticket').classList.toggle('is-used', used);
+    $('ticket-status').textContent = used ? '使用済' : '未使用';
+    $('redeem-state').textContent = used ? '使用済' : '未使用';
+    $('redeem-state').classList.toggle('is-used', used);
     $('redeem-form').hidden = used;
     $('used-info').hidden = !used;
     if (used) $('used-at').textContent = formatDate(state.redeemedAt);
@@ -91,12 +92,27 @@
 
   // ---------- 画面切替 ----------
   const show = (view) => {
-    $('view-myqr').hidden = view !== 'myqr';
-    $('view-redeem').hidden = view !== 'redeem';
+    ['myqr', 'redeem'].forEach((v) => {
+      const el = $(`view-${v}`);
+      const on = v === view;
+      if (on && el.hidden) { el.style.animation = 'none'; void el.offsetWidth; el.style.animation = ''; } // 遷移アニメを再生
+      el.hidden = !on;
+    });
+    document.querySelectorAll('.tab[data-tab]').forEach((t) => {
+      const on = t.dataset.tab === view;
+      t.classList.toggle('is-active', on);
+      if (on) t.setAttribute('aria-current', 'page'); else t.removeAttribute('aria-current');
+    });
     window.scrollTo(0, 0);
   };
+  const goMyQr = () => {
+    if (history.state && history.state.redeem) { history.back(); return; }
+    history.replaceState(null, '', location.pathname + location.search);
+    show('myqr');
+  };
   const openRedeem = () => {
-    if (location.hash !== '#redeem') history.pushState({ redeem: true }, '', '#redeem');
+    if (location.hash === '#redeem') return;
+    history.pushState({ redeem: true }, '', '#redeem');
     show('redeem');
     track('redeem_view');
     flush();
@@ -104,7 +120,21 @@
   window.addEventListener('popstate', () => show(location.hash === '#redeem' ? 'redeem' : 'myqr'));
 
   // ---------- 引換 ----------
-  const setError = (msg) => { $('form-error').textContent = msg || ''; };
+  const setError = (msg) => {
+    $('form-error').textContent = msg || '';
+    const otp = $('otp');
+    otp.classList.remove('is-error');
+    if (msg) { void otp.offsetWidth; otp.classList.add('is-error'); }
+  };
+  // 4桁コード入力（1つの input を4マスで表示）
+  const renderOtp = () => {
+    const v = $('code').value;
+    document.querySelectorAll('#otp .otp-cell').forEach((c, i) => {
+      c.textContent = v[i] || '';
+      c.classList.toggle('is-active', i === Math.min(v.length, 3));
+    });
+    $('redeem-submit').disabled = v.length !== 4;
+  };
   const ERROR_TEXT = {
     invalid_code: 'コードが正しくありません。スタッフにご確認ください。',
     locked: '入力回数の上限に達しました。しばらくしてからお試しいただくか、スタッフにお声がけください。',
@@ -126,6 +156,7 @@
         save();
         render();
         $('code').value = '';
+        renderOtp();
       } else {
         setError(ERROR_TEXT[res && res.error] || '引き換えできませんでした。スタッフにお声がけください。');
       }
@@ -145,14 +176,14 @@
     render();
     show(location.hash === '#redeem' ? 'redeem' : 'myqr');
 
-    $('go-redeem').addEventListener('click', openRedeem);
-    $('back-myqr').addEventListener('click', () => {
-      if (history.state && history.state.redeem) { history.back(); return; }
-      history.replaceState(null, '', location.pathname + location.search);
-      show('myqr');
+    document.querySelectorAll('.tab[data-tab]').forEach((t) => {
+      t.addEventListener('click', () => (t.dataset.tab === 'redeem' ? openRedeem() : goMyQr()));
     });
     $('redeem-form').addEventListener('submit', onRedeem);
-    $('code').addEventListener('input', (e) => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4); setError(''); });
+    $('code').addEventListener('input', (e) => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4); setError(''); renderOtp(); });
+    $('code').addEventListener('focus', () => $('otp').classList.add('is-focused'));
+    $('code').addEventListener('blur', () => $('otp').classList.remove('is-focused'));
+    renderOtp();
 
     // 画面に戻ってきたとき・1分ごとに、立ち寄りブース数を更新
     document.addEventListener('visibilitychange', () => { if (!document.hidden) flush(); });

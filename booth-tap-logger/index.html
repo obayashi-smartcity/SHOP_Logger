@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#fdf5f6">
   <meta name="robots" content="noindex">
   <title>マイQR | EmpoweringWOMEN</title>
   <link rel="icon" type="image/png" href="images/favicon.png">
@@ -11,103 +12,126 @@
   <script src="js/vendor/qrcode.js" defer></script>
   <script src="js/visitor.js" defer></script>
 </head>
-<body>
-  <header class="site-header">
-    <div class="header-inner">
+<body class="has-tabbar">
+  <!-- ヘッダー：ブランド＋立ち寄りブース数 -->
+  <header class="app-header">
+    <div class="app-header-inner">
       <span class="brand">
         <span class="brand-en">EmpoweringWOMEN</span><small>みんまちSHOP マイQR</small>
+      </span>
+      <span class="header-pill" aria-label="立ち寄ったブース数">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+        <strong id="header-count">0</strong>
       </span>
     </div>
   </header>
 
-  <main id="main">
+  <main class="app" id="main">
     <!-- ===== マイQR ===== -->
     <section class="view" id="view-myqr" aria-labelledby="myqr-title">
-      <div class="hero">
+      <div class="page-hero">
         <img class="hero-image" src="images/hero.jpg" alt="" aria-hidden="true">
         <div class="hero-shade"></div>
-        <div class="hero-content container">
-          <p class="eyebrow">MY QR CODE</p>
-          <h1 id="myqr-title">マイQR</h1>
-          <p class="hero-lead">各ブースでこのQRコードを<br>スタッフにお見せください。</p>
+        <p class="kicker">MY QR CODE</p>
+        <h1 class="page-title" id="myqr-title">マイQR</h1>
+        <p class="page-lead">各ブースでこのQRコードを<br>スタッフにお見せください。</p>
+      </div>
+
+      <div class="pad">
+        <!-- 会員証型カード（QRを大きく） -->
+        <div class="member-card myqr-card">
+          <div class="member-card-head">
+            <span class="brand-en">EmpoweringWOMEN</span>
+            <span class="member-card-label">MY QR</span>
+          </div>
+          <div class="myqr-body">
+            <div class="myqr" id="myqr" role="img" aria-label="あなた専用のQRコード"></div>
+            <p class="myqr-id">No. <span id="myqr-id">------</span></p>
+            <p class="myqr-hint">画面を明るくしてお見せいただくと、読み取りがスムーズです</p>
+          </div>
+        </div>
+
+        <!-- 状況 -->
+        <div class="stat-row">
+          <div class="stat">
+            <p class="stat-label">立ち寄ったブース</p>
+            <p class="stat-value"><strong id="visit-count">0</strong>か所</p>
+          </div>
+          <div class="stat">
+            <p class="stat-label">景品引換</p>
+            <p class="stat-value is-text" id="redeem-state">未使用</p>
+          </div>
+        </div>
+
+        <!-- つかいかた -->
+        <div class="section">
+          <div class="section-head"><h2>つかいかた</h2></div>
+          <div class="card">
+            <ol class="steps">
+              <li>ブースでスタッフに<strong>このQRコード</strong>をお見せください。スタッフが読み取ります。</li>
+              <li>景品受付で下のメニューの<strong>「景品」</strong>を開きます。</li>
+              <li>スタッフから伝えられる<strong>4桁のコード</strong>を入力すると、景品と引き換えられます。</li>
+            </ol>
+            <p class="small" style="margin:14px 0 0">※このQRコードは、この端末のブラウザに保存されたあなた専用のものです。<br>※ブラウザの履歴やデータを消去すると、別のQRコードに変わります。</p>
+          </div>
         </div>
       </div>
 
-      <div class="container">
-        <div class="card myqr-card">
-          <div class="myqr" id="myqr" role="img" aria-label="あなた専用のQRコード"></div>
-          <p class="myqr-id">No. <span id="myqr-id">------</span></p>
-          <p class="note">画面を明るくしてお見せいただくと、読み取りがスムーズです。</p>
-        </div>
-
-        <div class="card count-card visit-card">
-          <p class="section-kicker">VISITED BOOTHS</p>
-          <p class="count"><strong id="visit-count">0</strong><span>か所 立ち寄りました</span></p>
-          <p class="note">立ち寄ったブースの数にかかわらず、いつでも景品と引き換えられます。</p>
-        </div>
-
-        <div class="actions">
-          <button class="button button-primary" type="button" id="go-redeem">
-            <span id="go-redeem-label">景品と引き換える</span><span aria-hidden="true">→</span>
-          </button>
-        </div>
-
-        <details class="howto">
-          <summary>つかいかた</summary>
-          <ol>
-            <li>ブースでスタッフにこの画面のQRコードをお見せください。スタッフが読み取ります。</li>
-            <li>景品受付で「景品と引き換える」を押し、スタッフから伝えられる4桁のコードを入力してください。</li>
-          </ol>
-          <p class="small">※このQRコードは、この端末のブラウザに保存されたあなた専用のものです。<br>※ブラウザの履歴やデータを消去すると、別のQRコードに変わります。</p>
-        </details>
-      </div>
+      <footer class="app-footer">
+        <p>このページでは、イベント改善のため、端末ごとの匿名IDで、ブースでの読み取りと景品引換の記録を取得します。氏名・メールアドレスなどの個人情報は取得しません。</p>
+        <p>運営：株式会社大林組<br>© OBAYASHI CORPORATION, All rights reserved</p>
+      </footer>
     </section>
 
     <!-- ===== 景品引換 ===== -->
     <section class="view" id="view-redeem" aria-labelledby="redeem-title" hidden>
-      <div class="container narrow">
-        <p class="section-kicker">GIFT TICKET</p>
+      <div class="page-head">
+        <p class="kicker">GIFT TICKET</p>
         <h1 class="page-title" id="redeem-title">景品引換券</h1>
-
+      </div>
+      <div class="pad">
         <div class="ticket" id="ticket">
+          <span class="ticket-status" id="ticket-status">未使用</span>
           <div class="ticket-main">
             <p class="ticket-brand">EmpoweringWOMEN</p>
             <p class="ticket-label">立ち寄ったブース</p>
             <p class="ticket-count"><strong id="ticket-count">0</strong>か所</p>
           </div>
-          <div class="ticket-sub">
-            <span>No.</span><span id="ticket-id">------</span>
-          </div>
+          <div class="ticket-sub"><span>No.</span><span id="ticket-id">------</span></div>
           <div class="used-mark" id="used-mark" aria-hidden="true"><span>使用済</span></div>
         </div>
 
-        <form class="redeem-form" id="redeem-form" novalidate>
-          <p>景品受付のスタッフにこの画面をお見せください。<br>スタッフがお伝えする<strong>4桁のコード</strong>を入力してください。</p>
+        <form class="card redeem-form" id="redeem-form" novalidate>
+          <p>景品受付でこの画面をお見せください。<br>スタッフがお伝えする<strong>4桁のコード</strong>を<br>入力してください。</p>
           <label class="sr-only" for="code">4桁のコード</label>
-          <input class="code-input" id="code" name="code" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" placeholder="----" required>
+          <div class="otp" id="otp">
+            <input class="otp-input" id="code" name="code" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="one-time-code" required>
+            <span class="otp-cell"></span><span class="otp-cell"></span><span class="otp-cell"></span><span class="otp-cell"></span>
+          </div>
           <p class="form-error" id="form-error" role="alert"></p>
-          <button class="button button-dark" type="submit" id="redeem-submit">引き換える<span aria-hidden="true">✓</span></button>
-          <p class="small">※引き換えると、この引換券は使用済になります。</p>
+          <button class="button button-dark button-center" type="submit" id="redeem-submit" disabled>引き換える</button>
+          <p class="small" style="margin:10px 0 0">※引き換えると、この引換券は使用済になります。</p>
         </form>
 
-        <div class="used-info" id="used-info" hidden>
+        <div class="card used-info" id="used-info" hidden>
           <p class="used-title">引き換えが完了しました</p>
           <p>ご来場ありがとうございました。</p>
           <p class="small">引換日時：<span id="used-at">-</span></p>
-        </div>
-
-        <div class="actions">
-          <button class="button button-ghost" type="button" id="back-myqr"><span aria-hidden="true">←</span>マイQRに戻る<span></span></button>
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <div class="container">
-      <p class="privacy">このページでは、イベント改善のため、端末ごとの匿名IDで、ブースでの読み取りと景品引換の記録を取得します。氏名・メールアドレスなどの個人情報は取得しません。</p>
-      <p><small>運営：株式会社大林組<br>© OBAYASHI CORPORATION, All rights reserved</small></p>
+  <!-- 下部タブバー -->
+  <nav class="tabbar" aria-label="メニュー">
+    <div class="tabbar-inner">
+      <button class="tab is-active" type="button" data-tab="myqr" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><path d="M14 14h2v2h-2zM18 14h2M14 18h2M18 18h2v2"/></svg>マイQR
+      </button>
+      <button class="tab" type="button" data-tab="redeem">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M5 12v8h14v-8M12 8v12M12 8c-1.5-3-5-3.5-5-1.5S10 8 12 8zm0 0c1.5-3 5-3.5 5-1.5S14 8 12 8z"/></svg>景品
+      </button>
     </div>
-  </footer>
+  </nav>
 </body>
 </html>

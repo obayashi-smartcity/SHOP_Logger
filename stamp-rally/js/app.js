@@ -72,9 +72,13 @@
   // ---------- 描画 ----------
   const checkIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
   const render = (newSpotId) => {
-    $('stamp-count').textContent = stampCount();
-    $('ticket-count').textContent = stampCount();
-    $('ticket-id').textContent = state.id.replace(/-/g, '').slice(-6).toUpperCase();
+    const n = stampCount();
+    const no = state.id.replace(/-/g, '').slice(-6).toUpperCase();
+    ['stamp-count', 'stamp-count-2', 'header-count', 'ticket-count'].forEach((id) => { $(id).textContent = n; });
+    $('stamp-total').textContent = SPOTS.length;
+    $('progress-bar').style.width = SPOTS.length ? `${Math.min(100, (n / SPOTS.length) * 100)}%` : '0';
+    $('ticket-id').textContent = no;
+    $('card-id').textContent = no;
 
     const grid = $('stamp-grid');
     grid.innerHTML = '';
@@ -95,8 +99,8 @@
     });
 
     const used = Boolean(state.redeemedAt);
-    $('go-redeem-label').textContent = used ? '引換券（使用済）を見る' : '景品と引き換える';
     $('ticket').classList.toggle('is-used', used);
+    $('ticket-status').textContent = used ? '使用済' : '未使用';
     $('redeem-form').hidden = used;
     $('used-info').hidden = !used;
     if (used) $('used-at').textContent = formatDate(state.redeemedAt);
@@ -110,12 +114,27 @@
 
   // ---------- 画面切替 ----------
   const show = (view) => {
-    $('view-stamps').hidden = view !== 'stamps';
-    $('view-redeem').hidden = view !== 'redeem';
+    ['stamps', 'redeem'].forEach((v) => {
+      const el = $(`view-${v}`);
+      const on = v === view;
+      if (on && el.hidden) { el.style.animation = 'none'; void el.offsetWidth; el.style.animation = ''; } // 遷移アニメを再生
+      el.hidden = !on;
+    });
+    document.querySelectorAll('.tab[data-tab]').forEach((t) => {
+      const on = t.dataset.tab === view;
+      t.classList.toggle('is-active', on);
+      if (on) t.setAttribute('aria-current', 'page'); else t.removeAttribute('aria-current');
+    });
     window.scrollTo(0, 0);
   };
+  const goStamps = () => {
+    if (history.state && history.state.redeem) { history.back(); return; }
+    history.replaceState(null, '', location.pathname + location.search);
+    show('stamps');
+  };
   const openRedeem = () => {
-    if (location.hash !== '#redeem') history.pushState({ redeem: true }, '', '#redeem');
+    if (location.hash === '#redeem') return;
+    history.pushState({ redeem: true }, '', '#redeem');
     show('redeem');
     track('redeem_view');
     flush();
@@ -139,7 +158,21 @@
   };
 
   // ---------- 引換 ----------
-  const setError = (msg) => { $('form-error').textContent = msg || ''; };
+  const setError = (msg) => {
+    $('form-error').textContent = msg || '';
+    const otp = $('otp');
+    otp.classList.remove('is-error');
+    if (msg) { void otp.offsetWidth; otp.classList.add('is-error'); }
+  };
+  // 4桁コード入力（1つの input を4マスで表示）
+  const renderOtp = () => {
+    const v = $('code').value;
+    document.querySelectorAll('#otp .otp-cell').forEach((c, i) => {
+      c.textContent = v[i] || '';
+      c.classList.toggle('is-active', i === Math.min(v.length, 3));
+    });
+    $('redeem-submit').disabled = v.length !== 4;
+  };
   const ERROR_TEXT = {
     invalid_code: 'コードが正しくありません。スタッフにご確認ください。',
     locked: '入力回数の上限に達しました。しばらくしてからお試しいただくか、スタッフにお声がけください。',
@@ -167,6 +200,7 @@
         save();
         render();
         $('code').value = '';
+        renderOtp();
       } else {
         setError(ERROR_TEXT[res && res.error] || '引き換えできませんでした。スタッフにお声がけください。');
       }
@@ -346,11 +380,13 @@
     render(newSpotId);
     show(location.hash === '#redeem' ? 'redeem' : 'stamps');
 
-    $('go-redeem').addEventListener('click', openRedeem);
-    $('back-stamps').addEventListener('click', () => {
-      if (history.state && history.state.redeem) { history.back(); return; }
-      history.replaceState(null, '', location.pathname + location.search);
-      show('stamps');
+    document.querySelectorAll('.tab[data-tab]').forEach((t) => {
+      t.addEventListener('click', () => {
+        const tab = t.dataset.tab;
+        if (tab === 'scan') scanner.open();
+        else if (tab === 'redeem') openRedeem();
+        else goStamps();
+      });
     });
     $('modal-close').addEventListener('click', closeModal);
     $('open-scanner').addEventListener('click', scanner.open);
@@ -358,7 +394,10 @@
     document.addEventListener('visibilitychange', () => { if (document.hidden) scanner.close(); });
     $('modal').addEventListener('click', (e) => { if (e.target === $('modal')) closeModal(); });
     $('redeem-form').addEventListener('submit', onRedeem);
-    $('code').addEventListener('input', (e) => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4); setError(''); });
+    $('code').addEventListener('input', (e) => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4); setError(''); renderOtp(); });
+    $('code').addEventListener('focus', () => $('otp').classList.add('is-focused'));
+    $('code').addEventListener('blur', () => $('otp').classList.remove('is-focused'));
+    renderOtp();
 
     if (!GAS_URL) console.warn('[stamp-rally] js/config.js の GAS_URL が未設定のため、ログは端末内に保留されます。');
     flush();

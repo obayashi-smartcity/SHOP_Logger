@@ -60,8 +60,14 @@
 
   // ---------- 画面切替 ----------
   const show = (view) => {
-    $('view-setup').hidden = view !== 'setup';
-    $('view-scan').hidden = view !== 'scan';
+    ['setup', 'scan'].forEach((v) => {
+      const el = $(`view-${v}`);
+      const on = v === view;
+      if (on && el.hidden) { el.style.animation = 'none'; void el.offsetWidth; el.style.animation = ''; } // 遷移アニメを再生
+      el.hidden = !on;
+    });
+    document.body.classList.toggle('has-bottombar', view === 'setup');
+    $('setup-bar').hidden = view !== 'setup';
     window.scrollTo(0, 0);
   };
 
@@ -98,6 +104,7 @@
       list.append(li);
     });
     $('booth-step').hidden = booths.length === 0;
+    $('step1-label').classList.toggle('is-done', booths.length > 0);
     $('start-scan').disabled = !booths.some((b) => b.id === selectedId);
   };
 
@@ -231,11 +238,12 @@
       box.append(b);
     });
     $('action-panel').hidden = false;
-    $('action-panel').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    $('sheet-backdrop').hidden = false;
   };
   const hidePanel = () => {
     panelVisitor = null;
     $('action-panel').hidden = true;
+    $('sheet-backdrop').hidden = true;
     msg('来場者の「マイQR」を枠の中に写してください。');
   };
   const msg = (t) => { $('scanner-msg').textContent = t || ''; };
@@ -370,6 +378,7 @@
     $('change-setup').addEventListener('click', openSetup);
     $('camera-start').addEventListener('click', () => scanner.start());
     $('action-cancel').addEventListener('click', hidePanel);
+    $('sheet-backdrop').addEventListener('click', hidePanel);
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) { scanner.stop(); return; }
       if (!$('view-scan').hidden) $('camera-start').hidden = false;
