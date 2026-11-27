@@ -179,6 +179,13 @@
     document.querySelectorAll('.tab[data-tab]').forEach((t) => {
       t.addEventListener('click', () => (t.dataset.tab === 'redeem' ? openRedeem() : goMyQr()));
     });
+    // つかいかた（ヘルプシート）：初回だけ自動で表示
+    const openHelp = () => { $('help-sheet').hidden = false; $('help-backdrop').hidden = false; };
+    const closeHelp = () => { $('help-sheet').hidden = true; $('help-backdrop').hidden = true; state.helpSeen = true; save(); };
+    $('open-help').addEventListener('click', openHelp);
+    $('close-help').addEventListener('click', closeHelp);
+    $('help-backdrop').addEventListener('click', closeHelp);
+    if (!state.helpSeen && location.hash !== '#redeem') openHelp();
     $('redeem-form').addEventListener('submit', onRedeem);
     $('code').addEventListener('input', (e) => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4); setError(''); renderOtp(); });
     $('code').addEventListener('focus', () => $('otp').classList.add('is-focused'));

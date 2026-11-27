@@ -78,34 +78,25 @@
   let selectedId = null;
 
   const renderBooths = () => {
-    const list = $('booth-list');
-    list.innerHTML = '';
+    const sel = $('booth-select');
+    sel.innerHTML = '';
+    const ph = document.createElement('option');
+    ph.value = '';
+    ph.textContent = 'ブースを選んでください';
+    sel.append(ph);
     booths.forEach((b) => {
-      const li = document.createElement('li');
-      const label = document.createElement('label');
-      label.className = 'booth-option';
-      const radio = document.createElement('input');
-      radio.type = 'radio';
-      radio.name = 'booth';
-      radio.value = b.id;
-      radio.checked = b.id === selectedId;
-      radio.addEventListener('change', () => { selectedId = b.id; $('start-scan').disabled = false; });
-      const body = document.createElement('span');
-      body.className = 'booth-body';
-      const name = document.createElement('span');
-      name.className = 'booth-name';
-      name.textContent = b.name;
-      const acts = document.createElement('span');
-      acts.className = 'booth-actions';
-      acts.textContent = b.actions.join(' / ');
-      body.append(name, acts);
-      label.append(radio, body);
-      li.append(label);
-      list.append(li);
+      const o = document.createElement('option');
+      o.value = b.id;
+      o.textContent = b.name;
+      sel.append(o);
     });
+    if (!booths.some((b) => b.id === selectedId)) selectedId = null;
+    sel.value = selectedId || '';
+    const cur = booths.find((b) => b.id === selectedId);
+    $('booth-actions-preview').textContent = cur ? `記録ボタン：${cur.actions.join(' / ')}` : '';
     $('booth-step').hidden = booths.length === 0;
     $('step1-label').classList.toggle('is-done', booths.length > 0);
-    $('start-scan').disabled = !booths.some((b) => b.id === selectedId);
+    $('start-scan').disabled = !cur;
   };
 
   const fetchBooths = async (key) => {
@@ -169,7 +160,7 @@
 
     const list = $('recent-list');
     list.innerHTML = '';
-    mine.slice(-10).reverse().forEach((r) => {
+    mine.slice(-5).reverse().forEach((r) => {
       const li = document.createElement('li');
       const status = !r.sent ? '<span class="tag tag-wait">未送信</span>'
         : r.repeat ? '<span class="tag">再来訪</span>' : '<span class="tag tag-new">初来訪</span>';
@@ -375,6 +366,7 @@
   const init = () => {
     $('key-form').addEventListener('submit', onLoadBooths);
     $('start-scan').addEventListener('click', startScan);
+    $('booth-select').addEventListener('change', (e) => { selectedId = e.target.value || null; renderBooths(); });
     $('change-setup').addEventListener('click', openSetup);
     $('camera-start').addEventListener('click', () => scanner.start());
     $('action-cancel').addEventListener('click', hidePanel);

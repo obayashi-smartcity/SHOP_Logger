@@ -74,7 +74,7 @@
   const render = (newSpotId) => {
     const n = stampCount();
     const no = state.id.replace(/-/g, '').slice(-6).toUpperCase();
-    ['stamp-count', 'stamp-count-2', 'header-count', 'ticket-count'].forEach((id) => { $(id).textContent = n; });
+    ['stamp-count', 'header-count', 'ticket-count'].forEach((id) => { $(id).textContent = n; });
     $('stamp-total').textContent = SPOTS.length;
     $('progress-bar').style.width = SPOTS.length ? `${Math.min(100, (n / SPOTS.length) * 100)}%` : '0';
     $('ticket-id').textContent = no;
@@ -389,7 +389,13 @@
       });
     });
     $('modal-close').addEventListener('click', closeModal);
-    $('open-scanner').addEventListener('click', scanner.open);
+    // あそびかた（ヘルプシート）：初回だけ自動で表示
+    const openHelp = () => { $('help-sheet').hidden = false; $('help-backdrop').hidden = false; };
+    const closeHelp = () => { $('help-sheet').hidden = true; $('help-backdrop').hidden = true; state.helpSeen = true; save(); };
+    $('open-help').addEventListener('click', openHelp);
+    $('close-help').addEventListener('click', closeHelp);
+    $('help-backdrop').addEventListener('click', closeHelp);
+    if (!state.helpSeen && !spotId && location.hash !== '#redeem') openHelp();
     $('close-scanner').addEventListener('click', scanner.close);
     document.addEventListener('visibilitychange', () => { if (document.hidden) scanner.close(); });
     $('modal').addEventListener('click', (e) => { if (e.target === $('modal')) closeModal(); });

@@ -23,61 +23,50 @@
 
   <main class="app" id="main">
     <!-- ===== 設定 ===== -->
-    <section class="view" id="view-setup" aria-labelledby="setup-title">
-      <div class="page-head">
-        <p class="kicker">STAFF SETUP</p>
+    <section class="view pad" id="view-setup" aria-labelledby="setup-title">
+      <div class="page-head compact" style="padding-inline:4px">
         <h1 class="page-title" id="setup-title">スタッフ設定</h1>
-        <p class="page-lead">読み取りを始める前に、担当するブースを設定してください。</p>
       </div>
 
-      <div class="pad">
-        <form class="card setup-step" id="key-form" novalidate>
-          <p class="step-label" id="step1-label"><span>1</span>合言葉を入力</p>
+      <form class="card setup-step" id="key-form" novalidate>
+        <p class="step-label" id="step1-label"><span>1</span>合言葉を入力</p>
+        <div class="inline-form">
           <label class="sr-only" for="staff-key">スタッフ用の合言葉</label>
-          <input class="text-input" id="staff-key" type="password" inputmode="numeric" autocomplete="off" placeholder="運営から共有された合言葉" required>
-          <button class="button button-dark button-center" type="submit" id="load-booths">ブース一覧を読み込む</button>
-          <p class="form-error" id="setup-error" role="alert"></p>
-        </form>
-
-        <div class="card setup-step" id="booth-step" hidden>
-          <p class="step-label"><span>2</span>担当ブースを選択</p>
-          <ul class="booth-list" id="booth-list" role="radiogroup" aria-label="ブース一覧"></ul>
+          <input class="text-input" id="staff-key" type="password" inputmode="numeric" autocomplete="off" placeholder="合言葉" required>
+          <button class="button button-dark button-center" type="submit" id="load-booths">読み込む</button>
         </div>
-      </div>
+        <p class="form-error" id="setup-error" role="alert"></p>
+      </form>
 
+      <div class="card setup-step" id="booth-step" hidden>
+        <p class="step-label"><span>2</span>担当ブースを選択</p>
+        <label class="sr-only" for="booth-select">担当ブース</label>
+        <select class="select-input" id="booth-select"></select>
+        <p class="booth-actions-preview" id="booth-actions-preview"></p>
+      </div>
     </section>
 
     <!-- ===== 読み取り ===== -->
-    <section class="view" id="view-scan" aria-labelledby="scan-booth" hidden>
-      <div class="pad">
-        <div class="card booth-bar" style="margin-top:14px">
-          <div>
-            <p class="kicker">BOOTH</p>
-            <p class="scan-booth" id="scan-booth">-</p>
-          </div>
-          <button class="chip-button" type="button" id="change-setup">設定を変更</button>
+    <section class="view pad" id="view-scan" aria-labelledby="scan-booth" hidden>
+      <div class="card booth-bar">
+        <div class="booth-bar-main">
+          <p class="scan-booth" id="scan-booth">-</p>
+          <p class="booth-stats">記録 <strong id="stat-count">0</strong>件<span class="pending-chip" id="stat-pending" hidden>未送信 <strong id="stat-pending-n">0</strong>件</span></p>
         </div>
-
-        <div class="chips">
-          <span class="chip">この端末の記録 <strong id="stat-count">0</strong>件</span>
-          <span class="chip is-warn" id="stat-pending" hidden>未送信 <strong id="stat-pending-n">0</strong>件</span>
-        </div>
-
-        <div class="scanner-view">
-          <video id="scanner-video" playsinline muted autoplay></video>
-          <div class="scanner-frame" aria-hidden="true"><span></span><i></i></div>
-          <button class="button button-primary camera-start" type="button" id="camera-start" hidden>カメラを起動</button>
-        </div>
-        <p class="staff-msg" id="scanner-msg" role="status">来場者の「マイQR」を枠の中に写してください</p>
-
-        <div class="section">
-          <div class="section-head"><h2>最近の記録</h2><span class="meta">未送信は自動で再送します</span></div>
-          <div class="card" style="padding:4px 0">
-            <ol class="recent-list" id="recent-list"></ol>
-          </div>
-        </div>
+        <button class="chip-button" type="button" id="change-setup">設定</button>
       </div>
-      <div style="height:32px"></div>
+
+      <div class="scanner-view staff-scanner">
+        <video id="scanner-video" playsinline muted autoplay></video>
+        <div class="scanner-frame" aria-hidden="true"><span></span><i></i></div>
+        <button class="button button-primary camera-start" type="button" id="camera-start" hidden>カメラを起動</button>
+      </div>
+      <p class="staff-msg" id="scanner-msg" role="status">来場者の「マイQR」を枠の中に写してください</p>
+
+      <div class="card recent-card">
+        <p class="recent-title">最近の記録</p>
+        <ol class="recent-list" id="recent-list"></ol>
+      </div>
     </section>
   </main>
 

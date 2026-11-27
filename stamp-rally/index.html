@@ -12,123 +12,96 @@
   <script src="js/app.js" defer></script>
 </head>
 <body class="has-tabbar">
-  <!-- ヘッダー：ブランド＋スタンプ数 -->
+  <!-- ヘッダー：ブランド＋スタンプ数＋ヘルプ -->
   <header class="app-header">
     <div class="app-header-inner">
       <span class="brand">
         <span class="brand-en">EmpoweringWOMEN</span><small>みんまちSHOP スタンプラリー</small>
       </span>
-      <span class="header-pill" aria-label="あつめたスタンプ数">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M8.5 12.5l2.4 2.4 4.6-5"/></svg>
-        <strong id="header-count">0</strong>
+      <span class="header-actions">
+        <span class="header-pill" aria-label="あつめたスタンプ数">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M8.5 12.5l2.4 2.4 4.6-5"/></svg>
+          <strong id="header-count">0</strong>
+        </span>
+        <button class="help-button" type="button" id="open-help" aria-label="あそびかた">?</button>
       </span>
     </div>
   </header>
 
   <main class="app" id="main">
     <!-- ===== スタンプ ===== -->
-    <section class="view" id="view-stamps" aria-labelledby="stamps-title">
-      <div class="page-hero">
-        <img class="hero-image" src="images/hero.jpg" alt="" aria-hidden="true">
-        <div class="hero-shade"></div>
-        <p class="kicker">STAMP RALLY</p>
-        <h1 class="page-title" id="stamps-title">スタンプラリー</h1>
-        <p class="page-lead">会場のQRコードを読み取って、<br>スタンプをあつめよう。</p>
+    <section class="view pad" id="view-stamps" aria-label="スタンプ">
+      <!-- スタンプカード（会員証型） -->
+      <div class="member-card">
+        <div class="member-card-head">
+          <span class="brand-en">STAMP RALLY</span>
+          <span class="member-no">No.<span id="card-id">------</span></span>
+        </div>
+        <div class="stamp-card-body">
+          <p class="stamp-count"><strong id="stamp-count">0</strong><span class="of">/ <span id="stamp-total">0</span></span><span>こ あつめました</span></p>
+        </div>
+        <div class="progress" aria-hidden="true"><span id="progress-bar"></span></div>
       </div>
 
-      <div class="pad">
-        <!-- スタンプカード（会員証型） -->
-        <div class="member-card">
-          <div class="member-card-head">
-            <span class="brand-en">EmpoweringWOMEN</span>
-            <span class="member-card-label">STAMP CARD</span>
-          </div>
-          <div class="stamp-card-body">
-            <div>
-              <p class="stamp-count"><strong id="stamp-count">0</strong><span>こ あつめました</span></p>
-              <p class="stamp-card-note">スタンプの数にかかわらず、いつでも景品と引き換えられます</p>
-            </div>
-            <span class="member-no">No.<span id="card-id">------</span></span>
-          </div>
-          <div class="progress" aria-hidden="true"><span id="progress-bar"></span></div>
-        </div>
-
-        <!-- QR読み取りの導線 -->
-        <button class="scan-cta" type="button" id="open-scanner">
-          <span class="scan-cta-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M7 12h10"/></svg></span>
-          <span class="scan-cta-text"><strong>カメラでQRを読み取る</strong><small>スマホのカメラアプリで読み取ってもOK</small></span>
-          <span class="scan-cta-arrow" aria-hidden="true">→</span>
-        </button>
-
-        <!-- スタンプ一覧 -->
-        <div class="section">
-          <div class="section-head">
-            <h2>スタンプ一覧</h2>
-            <span class="meta"><strong id="stamp-count-2">0</strong> / <span id="stamp-total">0</span></span>
-          </div>
-          <div class="card stamp-sheet">
-            <ul class="stamp-grid" id="stamp-grid" aria-label="スタンプ一覧"></ul>
-          </div>
-        </div>
-
-        <!-- あそびかた -->
-        <div class="section">
-          <div class="section-head"><h2>あそびかた</h2></div>
-          <div class="card">
-            <ol class="steps">
-              <li>受付・トーク会場・各ブースにある<strong>QRコードを読み取る</strong>と、スタンプがたまります。</li>
-              <li>景品受付で下のメニューの<strong>「景品」</strong>を開きます。</li>
-              <li>スタッフから伝えられる<strong>4桁のコード</strong>を入力すると、景品と引き換えられます。</li>
-            </ol>
-            <p class="small" style="margin:14px 0 0">※引換券は1台の端末につき1回ご利用いただけます。<br>※ブラウザの履歴やデータを消去すると、スタンプが消える場合があります。</p>
-          </div>
-        </div>
+      <!-- スタンプ一覧 -->
+      <div class="card stamp-sheet">
+        <ul class="stamp-grid" id="stamp-grid" aria-label="スタンプ一覧"></ul>
       </div>
-
-      <footer class="app-footer">
-        <p>このページでは、イベント改善のため、端末ごとの匿名IDでスタンプの取得と景品引換の記録を取得します。氏名・メールアドレスなどの個人情報は取得しません。</p>
-        <p>運営：株式会社大林組<br>© OBAYASHI CORPORATION, All rights reserved</p>
-      </footer>
+      <p class="mini-note">下の<strong>「QR読取」</strong>か、スマホのカメラで会場のQRを読み取ろう</p>
     </section>
 
     <!-- ===== 景品引換 ===== -->
-    <section class="view" id="view-redeem" aria-labelledby="redeem-title" hidden>
-      <div class="page-head">
-        <p class="kicker">GIFT TICKET</p>
+    <section class="view pad" id="view-redeem" aria-labelledby="redeem-title" hidden>
+      <div class="page-head compact" style="padding-inline:4px">
         <h1 class="page-title" id="redeem-title">景品引換券</h1>
       </div>
-      <div class="pad">
-        <div class="ticket" id="ticket">
-          <span class="ticket-status" id="ticket-status">未使用</span>
-          <div class="ticket-main">
+      <div class="ticket compact" id="ticket">
+        <span class="ticket-status" id="ticket-status">未使用</span>
+        <div class="ticket-main">
+          <div>
             <p class="ticket-brand">EmpoweringWOMEN</p>
             <p class="ticket-label">あつめたスタンプ</p>
-            <p class="ticket-count"><strong id="ticket-count">0</strong>こ</p>
           </div>
-          <div class="ticket-sub"><span>No.</span><span id="ticket-id">------</span></div>
-          <div class="used-mark" id="used-mark" aria-hidden="true"><span>使用済</span></div>
+          <p class="ticket-count"><strong id="ticket-count">0</strong>こ</p>
         </div>
+        <div class="ticket-sub"><span>No.</span><span id="ticket-id">------</span></div>
+        <div class="used-mark" id="used-mark" aria-hidden="true"><span>使用済</span></div>
+      </div>
 
-        <form class="card redeem-form" id="redeem-form" novalidate>
-          <p>景品受付でこの画面をお見せください。<br>スタッフがお伝えする<strong>4桁のコード</strong>を<br>入力してください。</p>
-          <label class="sr-only" for="code">4桁のコード</label>
-          <div class="otp" id="otp">
-            <input class="otp-input" id="code" name="code" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="one-time-code" required>
-            <span class="otp-cell"></span><span class="otp-cell"></span><span class="otp-cell"></span><span class="otp-cell"></span>
-          </div>
-          <p class="form-error" id="form-error" role="alert"></p>
-          <button class="button button-dark button-center" type="submit" id="redeem-submit" disabled>引き換える</button>
-          <p class="small" style="margin:10px 0 0">※引き換えると、この引換券は使用済になります。</p>
-        </form>
-
-        <div class="card used-info" id="used-info" hidden>
-          <p class="used-title">引き換えが完了しました</p>
-          <p>ご来場ありがとうございました。</p>
-          <p class="small">引換日時：<span id="used-at">-</span></p>
+      <form class="card redeem-form compact" id="redeem-form" novalidate>
+        <p>スタッフから聞いた<strong>4桁のコード</strong>を入力</p>
+        <label class="sr-only" for="code">4桁のコード</label>
+        <div class="otp" id="otp">
+          <input class="otp-input" id="code" name="code" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="one-time-code" required>
+          <span class="otp-cell"></span><span class="otp-cell"></span><span class="otp-cell"></span><span class="otp-cell"></span>
         </div>
+        <p class="form-error" id="form-error" role="alert"></p>
+        <button class="button button-dark button-center" type="submit" id="redeem-submit" disabled>引き換える</button>
+        <p class="small" style="margin:8px 0 0">引き換えると使用済になります（1端末1回）</p>
+      </form>
+
+      <div class="card used-info" id="used-info" hidden>
+        <p class="used-title">引き換えが完了しました</p>
+        <p style="margin:6px 0">ご来場ありがとうございました。</p>
+        <p class="small" style="margin:0">引換日時：<span id="used-at">-</span></p>
       </div>
     </section>
   </main>
+
+  <!-- あそびかた（ヘルプシート） -->
+  <div class="sheet-backdrop" id="help-backdrop" hidden></div>
+  <div class="bottom-sheet" id="help-sheet" role="dialog" aria-modal="true" aria-labelledby="help-title" hidden>
+    <h2 id="help-title">あそびかた</h2>
+    <ol class="steps">
+      <li>受付・トーク会場・各ブースの<strong>QRコードを読み取る</strong>とスタンプがたまります。</li>
+      <li>スタンプの数にかかわらず、いつでも景品と引き換えられます。景品受付で<strong>「景品」</strong>を開いてください。</li>
+      <li>スタッフから聞いた<strong>4桁のコード</strong>を入力すると引き換え完了です（1端末1回）。</li>
+    </ol>
+    <p class="sheet-note">※ブラウザのデータを消去すると、スタンプが消える場合があります。</p>
+    <p class="sheet-note">このページでは、イベント改善のため、端末ごとの匿名IDでスタンプの取得と景品引換の記録を取得します。氏名・メールアドレスなどの個人情報は取得しません。</p>
+    <p class="sheet-note">運営：株式会社大林組　© OBAYASHI CORPORATION</p>
+    <button class="button button-ghost" type="button" id="close-help">閉じる</button>
+  </div>
 
   <!-- 下部タブバー -->
   <nav class="tabbar" aria-label="メニュー">
